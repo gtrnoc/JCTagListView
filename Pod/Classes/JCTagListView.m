@@ -16,7 +16,9 @@
 
 @end
 
-@implementation JCTagListView
+@implementation JCTagListView {
+    NSLayoutConstraint *_heightConstraint;
+}
 
 static NSString * const reuseIdentifier = @"tagListViewItemId";
 
@@ -70,6 +72,22 @@ static NSString * const reuseIdentifier = @"tagListViewItemId";
     _collectionView.backgroundColor = [UIColor clearColor];
     [_collectionView registerClass:[JCTagCell class] forCellWithReuseIdentifier:reuseIdentifier];
     [self addSubview:_collectionView];
+    
+    _heightConstraint = [NSLayoutConstraint constraintWithItem:self attribute:NSLayoutAttributeHeight relatedBy:NSLayoutRelationEqual toItem:nil attribute:NSLayoutAttributeNotAnAttribute multiplier:1.0 constant:0.0];
+    [self.collectionView addObserver:self forKeyPath:NSStringFromSelector(@selector(contentSize)) options:NSKeyValueObservingOptionNew context:NULL];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([keyPath isEqualToString:NSStringFromSelector(@selector(contentSize))] && object == self.collectionView) {
+        _heightConstraint.constant = self.collectionView.contentSize.height;
+        _heightConstraint.active = YES;
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+- (void)dealloc {
+    [self.collectionView removeObserver:self forKeyPath:NSStringFromSelector(@selector(contentSize))];
 }
 
 - (void)setCompletionBlockWithSelected:(JCTagListViewBlock)completionBlock
