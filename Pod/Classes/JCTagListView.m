@@ -122,6 +122,10 @@ static NSString * const reuseIdentifier = @"tagListViewItemId";
     cell.titleLabel.textColor = self.tagTextColor;
     cell.titleLabel.font = self.tagTextFont;
     
+    if ([self.delegate respondsToSelector:@selector(tagListView:willShowTagCell:tagIndex:)]) {
+        [self.delegate tagListView:self willShowTagCell:cell tagIndex:indexPath.row];
+    }
+    
     if ([self.selectedTags containsObject:self.tags[indexPath.item]]) {
         cell.backgroundColor = self.tagSelectedBackgroundColor;
         cell.titleLabel.textColor = self.tagSelectedTextColor;

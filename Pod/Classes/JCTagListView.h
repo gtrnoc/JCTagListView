@@ -10,7 +10,17 @@
 
 typedef void (^JCTagListViewBlock)(NSInteger index);
 
+@class JCTagListView, JCTagCell;
+
+@protocol JCTagListViewDelegate <NSObject>
+
+- (void)tagListView:(JCTagListView *)tagListView willShowTagCell:(JCTagCell *)tagCell tagIndex:(NSInteger)tagIndex;
+
+@end
+
 @interface JCTagListView : UIView
+
+@property (nonatomic, weak) id<JCTagListViewDelegate> delegate;
 
 @property (nonatomic, strong) UIColor *tagStrokeColor;// default: lightGrayColor
 @property (nonatomic, strong) UIColor *tagTextColor;// default: darkGrayColor
